@@ -1,0 +1,1 @@
+export function sessionUserId(cookieHeader:string|undefined):string|undefined { return cookieHeader?.split(';').map(value=>value.trim()).find(value=>value.startsWith('yir_user='))?.slice('yir_user='.length); }

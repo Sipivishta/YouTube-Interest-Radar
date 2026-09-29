@@ -1,0 +1,2 @@
+import crypto from 'node:crypto';
+export function encryptSecret(value:string,keyBase64:string):string { const key=Buffer.from(keyBase64,'base64'); if(key.length!==32)throw new Error('APP_ENCRYPTION_KEY must decode to 32 bytes.'); const iv=crypto.randomBytes(12); const cipher=crypto.createCipheriv('aes-256-gcm',key,iv); const encrypted=Buffer.concat([cipher.update(value,'utf8'),cipher.final()]); return Buffer.concat([iv,cipher.getAuthTag(),encrypted]).toString('base64'); }

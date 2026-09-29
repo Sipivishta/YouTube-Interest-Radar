@@ -1,0 +1,10 @@
+import { describe, expect, it } from 'vitest';
+import { allPages, createOAuthClient, createYouTubeClient, YouTubeApiError } from '../src/youtube/client.js';
+import { getCapability } from '../src/youtube/capabilities.js';
+import { normalizeSubscription, normalizeVideo } from '../src/youtube/normalize.js';
+import { MemoryRepository } from '../src/db/memory-repository.js';
+
+describe('unit: YouTube client initialization', () => { it('creates an API client without a network request', () => expect(createYouTubeClient('test-api-key').videos.list).toBeTypeOf('function')); it('creates OAuth only with complete configuration', () => expect(createOAuthClient({port:3000,googleClientId:'id',googleClientSecret:'secret',googleRedirectUri:'http://localhost/callback',testVideoIds:[],demoMode:true,cookieSecure:false}).generateAuthUrl).toBeTypeOf('function')); });
+describe('unit: capability detection', () => { it('marks native watch history unavailable', () => expect(getCapability('watchHistory')).toMatchObject({available:false,testable:false})); });
+describe('unit: normalization', () => { it('normalizes thumbnail and rejects missing identifiers', () => { expect(normalizeVideo({id:'v1',snippet:{title:'Title',channelId:'c1',channelTitle:'Channel',thumbnails:{default:{url:'thumb'}}}})).toMatchObject({id:'v1',thumbnailUrl:'thumb'}); expect(normalizeVideo({id:'v1',snippet:{}})).toBeUndefined(); expect(normalizeSubscription({snippet:{title:'Channel',resourceId:{}}})).toBeUndefined(); }); });
+describe('unit: pagination and deduplication', () => { it('collects all pages and detects repeated tokens', async () => { const values=await allPages(async(token)=>token?{items:[2]}:{items:[1],nextPageToken:'next'}); expect(values).toEqual([1,2]); await expect(allPages(async()=>({items:[],nextPageToken:'loop'}))).rejects.toBeInstanceOf(YouTubeApiError); }); it('prevents duplicate likes in fixture repository', async () => { const db=new MemoryRepository(); await db.replaceLikedVideos('u',[{video:{id:'v',title:'one'}},{video:{id:'v',title:'two'}}]); expect(await db.getLikedVideos('u')).toHaveLength(1); }); });

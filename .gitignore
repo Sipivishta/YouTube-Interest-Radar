@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+credentials/
+tokens/
+*.token.json
+*.credentials.json
+*.secret
+*.secrets
+.DS_Store
+data/*.json
+!data/.gitkeep

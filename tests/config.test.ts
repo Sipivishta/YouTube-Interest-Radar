@@ -1,0 +1,4 @@
+import { describe, expect, it } from 'vitest'; import { loadConfig } from '../src/config.js';
+describe('unit: OAuth configuration',()=>{ it('parses configuration and IDs',()=>expect(loadConfig({PORT:'4545',GOOGLE_CLIENT_ID:'id',GOOGLE_CLIENT_SECRET:'secret',YOUTUBE_TEST_VIDEO_IDS:'one,two',DEMO_MODE:'true'})).toMatchObject({port:4545,googleClientId:'id',testVideoIds:['one','two'],demoMode:true})); it('rejects incomplete OAuth configuration',()=>expect(()=>loadConfig({GOOGLE_CLIENT_ID:'id'})).toThrow('set together')); });
+import { sessionUserId } from '../src/auth/session.js';
+describe('unit: authentication cookie parsing',()=>{ it('reads only the HTTP-only session cookie value',()=>expect(sessionUserId('theme=dark; yir_user=user-123')).toBe('user-123')); it('does not authenticate without the session cookie',()=>expect(sessionUserId('theme=dark')).toBeUndefined()); });
