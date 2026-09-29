@@ -1,0 +1,28 @@
+{
+  "name": "youtube-interest-radar",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Phase 0 API feasibility spike for YouTube Interest Radar",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "feasibility": "tsx scripts/feasibility-test.ts"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "googleapis": "^144.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.15.3",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.3"
+  }
+}
